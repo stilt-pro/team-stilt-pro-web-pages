@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brake Press Tooling Selector — Bystronic PR150x3100</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:    #1a5fa8;
+      --blue-lt: #e8f0fb;
+      --green:   #1a7a3c;
+      --green-lt:#e6f4ec;
+      --red:     #b02020;
+      --red-lt:  #faeaea;
+      --amber:   #a06000;
+      --amber-lt:#fff8e6;
+      --gray:    #4a5568;
+      --border:  #d1d5db;
+      --bg:      #f7f8fa;
+      --white:   #ffffff;
+      --shadow:  0 1px 4px rgba(0,0,0,.10);
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13.5px;
+      background: var(--bg);
+      color: #1a202c;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--blue);
+      color: #fff;
+      padding: 18px 24px 14px;
+    }
+    header h1 { font-size: 20px; font-weight: 700; letter-spacing: .3px; }
+    header p  { font-size: 13px; opacity: .82; margin-top: 3px; }
+
+    /* ── Layout ── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .card-title {
+      background: #2d3748;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 7px 12px;
+    }
+    .card-body { padding: 14px 12px; }
+
+    /* ── Inputs ── */
+    .input-group { margin-bottom: 12px; }
+    .input-group:last-child { margin-bottom: 0; }
+    label { display: block; font-size: 11.5px; font-weight: 700; color: var(--gray); margin-bottom: 4px; }
+    select, input[type=number] {
+      width: 100%;
+      padding: 7px 9px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: inherit;
+      background: var(--blue-lt);
+      color: #1a202c;
+      outline: none;
+    }
+    select:focus, input:focus { border-color: var(--blue); }
+
+    /* ── Derived values ── */
+    .derived-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .derived-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 7px 9px;
+    }
+    .derived-item .lbl { font-size: 10px; color: var(--gray); font-weight: 700; text-transform: uppercase; }
+    .derived-item .val { font-size: 14px; font-weight: 700; color: #1a202c; margin-top: 2px; }
+
+    /* ── Right column stacks ── */
+    .right-col { display: flex; flex-direction: column; gap: 18px; }
+
+    /* ── Tables ── */
+    .tbl-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    thead th {
+      background: #f0f2f5;
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gray);
+      white-space: nowrap;
+    }
+    thead th.left { text-align: left; }
+    tbody td {
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    tbody td.left { text-align: left; font-weight: 600; }
+    tbody tr:nth-child(even) td { background: #fafbfc; }
+
+    /* verdict badges */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .3px;
+    }
+    .pass  { background: var(--green-lt); color: var(--green); }
+    .fail  { background: var(--red-lt);   color: var(--red); }
+    .use   { background: var(--blue-lt);  color: var(--blue); font-size: 11px; }
+    .incompat { background: var(--amber-lt); color: var(--amber); }
+
+    /* ── Bend Length Limits ── */
+    .bll-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+    }
+    .bll-die {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .bll-die-title {
+      background: #2d3748;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 9px;
+    }
+    .bll-die table { font-size: 11.5px; }
+    .bll-die thead th { font-size: 10px; }
+
+    /* ── Notes ── */
+    .notes {
+      font-size: 11.5px;
+      color: var(--gray);
+      border-top: 1px solid var(--border);
+      margin-top: 10px;
+      padding-top: 9px;
+      line-height: 1.6;
+    }
+
+    /* ── Tabs ── */
+    .tabs { display: flex; gap: 0; border-bottom: 2px solid var(--blue); margin-bottom: 0; }
+    .tab {
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      border-radius: 4px 4px 0 0;
+      color: var(--gray);
+      background: transparent;
+      user-select: none;
+    }
+    .tab.active {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Full-width bottom section ── */
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 700px) {
+      main { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Brake Press Tooling Selector</h1>
+  <p>Bystronic PR150x3100 &mdash; 150 Ton Capacity &mdash; 122.05" Bed</p>
+</header>
+
+<main>
+
+  <!-- ═══ LEFT: Inputs ═══ -->
+  <div style="display:flex;flex-direction:column;gap:18px;">
+
+    <div class="card">
+      <div class="card-title">User Inputs</div>
+      <div class="card-body">
+
+        <div class="input-group">
+          <label for="material">Material Type</label>
+          <select id="material">
+            <option>Mild Steel</option>
+            <option>Stainless Steel</option>
+            <option>Aluminum</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="gauge">Material Thickness</label>
+          <select id="gauge">
+            <option>16 GA</option>
+            <option>14 GA</option>
+            <option selected>11 GA</option>
+            <option>10 GA</option>
+            <option>7 GA (3/16")</option>
+            <option>1/4"</option>
+            <option>3/8"</option>
+            <option>1/2"</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="bendLen">Bend Length (inches)</label>
+          <input type="number" id="bendLen" value="4" min="0.1" step="0.25" />
+        </div>
+
+        <div class="derived-grid">
+          <div class="derived-item">
+            <div class="lbl">Thickness (in)</div>
+            <div class="val" id="d-thickness">—</div>
+          </div>
+          <div class="derived-item">
+            <div class="lbl">Tensile (PSI)</div>
+            <div class="val" id="d-tensile">—</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Tooling Inventory</div>
+      <div class="card-body">
+        <p style="font-size:11.5px;font-weight:700;color:var(--gray);margin-bottom:6px;">PUNCH — BIU-029</p>
+        <table>
+          <tr><td style="color:var(--gray);font-size:11px;padding:2px 4px;">Tip Radius</td><td style="padding:2px 4px;text-align:right;font-weight:600;">3 mm / 0.1181"</td></tr>
+          <tr><td style="color:var(--gray);font-size:11px;padding:2px 4px;">Length</td><td style="padding:2px 4px;text-align:right;font-weight:600;">3160 mm / 124.4"</td></tr>
+          <tr><td style="color:var(--gray);font-size:11px;padding:2px 4px;">Max Pressure</td><td style="padding:2px 4px;text-align:right;font-weight:600;">48.77 t/ft</td></tr>
+        </table>
+        <p style="font-size:11.5px;font-weight:700;color:var(--gray);margin:10px 0 6px;">DIES</p>
+        <table>
+          <thead><tr><th class="left">ID</th><th>Vee</th><th>Length"</th><th>Max t/ft</th></tr></thead>
+          <tbody>
+            <tr><td class="left">OZU-363</td><td>20mm</td><td>123.03</td><td>24.38</td></tr>
+            <tr><td class="left">OZU-325</td><td>40mm</td><td>60.83</td><td>38.10</td></tr>
+            <tr><td class="left">OZU-330</td><td>50mm</td><td>60.83</td><td>45.72</td></tr>
+            <tr><td class="left">OZU-052</td><td>12mm</td><td>20.28</td><td>24.38</td></tr>
+            <tr><td class="left">OZU-362</td><td>10mm</td><td>20.28</td><td>24.38</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ RIGHT: Results ═══ -->
+  <div class="right-col">
+
+    <!-- Tooling Evaluation -->
+    <div class="card">
+      <div class="card-title">Tooling Evaluation</div>
+      <div class="card-body">
+        <div class="tabs">
+          <div class="tab active" onclick="switchTab(this,'punch')">Punch &amp; Die Combos</div>
+          <div class="tab" onclick="switchTab(this,'die')">Die Only</div>
+          <div class="tab" onclick="switchTab(this,'combined')">Combined Verdict</div>
+          <div class="tab" onclick="switchTab(this,'geometry')">Bend Geometry</div>
+        </div>
+
+        <!-- Punch+Die -->
+        <div id="tab-punch" class="tab-panel active" style="margin-top:12px;">
+          <div class="tbl-wrap">
+            <table id="tbl-punch">
+              <thead>
+                <tr>
+                  <th class="left">Punch / Die Combo</th>
+                  <th>Tons/ft</th>
+                  <th>Req. Tonnage</th>
+                  <th>Punch Pressure</th>
+                  <th>Machine Cap.</th>
+                  <th>Punch Length</th>
+                  <th>Machine Bed</th>
+                  <th>Tip vs Vee</th>
+                  <th>VERDICT</th>
+                  <th>Bend Radius"</th>
+                  <th>Min Flange"</th>
+                </tr>
+              </thead>
+              <tbody id="body-punch"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Die only -->
+        <div id="tab-die" class="tab-panel" style="margin-top:12px;">
+          <div class="tbl-wrap">
+            <table id="tbl-die">
+              <thead>
+                <tr>
+                  <th class="left">Die</th>
+                  <th>Tons/ft</th>
+                  <th>Req. Tonnage</th>
+                  <th>Die Pressure</th>
+                  <th>Die Length</th>
+                  <th>Machine Bed</th>
+                  <th>VERDICT</th>
+                </tr>
+              </thead>
+              <tbody id="body-die"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Combined verdict -->
+        <div id="tab-combined" class="tab-panel" style="margin-top:12px;">
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th class="left">Tooling Combination</th>
+                  <th>Punch Verdict</th>
+                  <th>Die Verdict</th>
+                  <th>Combined Tons/ft</th>
+                  <th>Bend Radius"</th>
+                  <th>VERDICT</th>
+                </tr>
+              </thead>
+              <tbody id="body-combined"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Bend Geometry -->
+        <div id="tab-geometry" class="tab-panel" style="margin-top:12px;">
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th class="left">Die</th>
+                  <th>Vee Opening"</th>
+                  <th>Bend Radius"</th>
+                  <th>Min Flange"</th>
+                </tr>
+              </thead>
+              <tbody id="body-geometry"></tbody>
+            </table>
+          </div>
+          <div class="notes">
+            <strong>Tonnage:</strong> Tons/ft = 575 &times; T&sup2; &times; Tensile / (V &times; 60,000)<br/>
+            <strong>Bend Radius:</strong> MAX(Punch Tip Radius, 5/32 &times; Vee Opening)<br/>
+            <strong>Min Flange:</strong> 0.67 &times; Vee Opening + Bend Radius
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ FULL WIDTH: Bend Length Limits ═══ -->
+  <div class="card full-width">
+    <div class="card-title">Bend Length Limits — All Gauges (Mild Steel)</div>
+    <div class="card-body">
+      <p style="font-size:11.5px;color:var(--gray);margin-bottom:12px;">
+        Max bend length before machine tonnage or tool length is exceeded. INCOMPATIBLE = die pressure limit exceeded for this gauge.
+      </p>
+      <div class="bll-grid" id="bll-grid"></div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ── Reference data ──────────────────────────────────────────────────
+const THICKNESSES = {
+  '16 GA':       0.0598,
+  '14 GA':       0.0747,
+  '11 GA':       0.1196,
+  '10 GA':       0.1345,
+  '7 GA (3/16")':0.1875,
+  '1/4"':        0.25,
+  '3/8"':        0.375,
+  '1/2"':        0.5,
+};
+const TENSILES = {
+  'Mild Steel':      60000,
+  'Stainless Steel': 85000,
+  'Aluminum':        35000,
+};
+const MACHINE = { maxCapacity: 150, bedLength: 122.05 };
+const PUNCH = { id: 'BIU-029', tipRadius_in: 3 / 25.4, length_in: 124.4015748, maxPressure: 48.768 };
+const DIES = [
+  { id: 'OZU-363', label: '20mm (OZU-363)', vee_mm: 20, vee_in: 20/25.4, length_in: 123.03, maxPressure: 24.384 },
+  { id: 'OZU-325', label: '40mm (OZU-325)', vee_mm: 40, vee_in: 40/25.4, length_in: 60.83,  maxPressure: 38.100 },
+  { id: 'OZU-330', label: '50mm (OZU-330)', vee_mm: 50, vee_in: 50/25.4, length_in: 60.83,  maxPressure: 45.720 },
+  { id: 'OZU-052', label: '12mm (OZU-052)', vee_mm: 12, vee_in: 12/25.4, length_in: 20.28,  maxPressure: 24.384 },
+  { id: 'OZU-362', label: '10mm (OZU-362)', vee_mm: 10, vee_in: 10/25.4, length_in: 20.28,  maxPressure: 24.384 },
+];
+const GAUGES = Object.keys(THICKNESSES);
+
+// ── Formulas ────────────────────────────────────────────────────────
+function tonsPerFt(T, tensile, V) {
+  return 575 * T * T * tensile / (V * 60000);
+}
+function reqTonnage(tpf, bendLen) {
+  return tpf * bendLen / 12;
+}
+function bendRadius(punchTip, vee) {
+  return Math.max(punchTip, (5/32) * vee);
+}
+function minFlange(vee, br) {
+  return 0.67 * vee + br;
+}
+function chk(ok) {
+  return ok
+    ? '<span class="badge pass">PASS</span>'
+    : '<span class="badge fail">FAIL</span>';
+}
+function fmt(n, d=4) { return n.toFixed(d); }
+
+// ── Main calculation ─────────────────────────────────────────────────
+function calculate() {
+  const mat    = document.getElementById('material').value;
+  const gauge  = document.getElementById('gauge').value;
+  const bendLen = parseFloat(document.getElementById('bendLen').value) || 0;
+
+  const T       = THICKNESSES[gauge];
+  const tensile = TENSILES[mat];
+
+  document.getElementById('d-thickness').textContent = T.toFixed(4) + '"';
+  document.getElementById('d-tensile').textContent   = tensile.toLocaleString();
+
+  const punchTip = PUNCH.tipRadius_in;
+
+  // ── PUNCH+DIE rows ──────────────────────────────────────────────
+  let punchRows   = '';
+  let dieRows     = '';
+  let combinedRows = '';
+  let geomRows    = '';
+  const combos = [];
+
+  DIES.forEach(die => {
+    const tpf  = tonsPerFt(T, tensile, die.vee_in);
+    const rTon = reqTonnage(tpf, bendLen);
+    const br   = bendRadius(punchTip, die.vee_in);
+    const mf   = minFlange(die.vee_in, br);
+
+    const punchPressOK  = tpf   <= PUNCH.maxPressure;
+    const machCapOK     = rTon  <= MACHINE.maxCapacity;
+    const punchLenOK    = bendLen <= PUNCH.length_in;
+    const machineBedOK  = bendLen <= MACHINE.bedLength;
+    const tipVeeOK      = punchTip <= die.vee_in / 2;
+
+    const punchVerdict  = punchPressOK && machCapOK && punchLenOK && machineBedOK && tipVeeOK;
+
+    const diePressOK    = tpf   <= die.maxPressure;
+    const dieLenOK      = bendLen <= die.length_in;
+    const dieBedOK      = bendLen <= MACHINE.bedLength;
+    const dieVerdict    = diePressOK && dieLenOK && dieBedOK;
+
+    const overall = punchVerdict && dieVerdict;
+
+    combos.push({ die, tpf, br, punchVerdict, dieVerdict, overall });
+
+    const comboLabel = `${PUNCH.id} w/ ${die.vee_mm}mm (${die.id})`;
+
+    punchRows += `<tr>
+      <td class="left">${comboLabel}</td>
+      <td>${fmt(tpf)}</td>
+      <td>${fmt(rTon)}</td>
+      <td>${chk(punchPressOK)}</td>
+      <td>${chk(machCapOK)}</td>
+      <td>${chk(punchLenOK)}</td>
+      <td>${chk(machineBedOK)}</td>
+      <td>${chk(tipVeeOK)}</td>
+      <td>${overall ? '<span class="badge pass">PASS</span>' : '<span class="badge fail">FAIL</span>'}</td>
+      <td>${fmt(br)}</td>
+      <td>${fmt(mf)}</td>
+    </tr>`;
+
+    dieRows += `<tr>
+      <td class="left">${die.id} (${die.vee_mm}mm Vee)</td>
+      <td>${fmt(tpf)}</td>
+      <td>${fmt(rTon)}</td>
+      <td>${chk(diePressOK)}</td>
+      <td>${chk(dieLenOK)}</td>
+      <td>${chk(dieBedOK)}</td>
+      <td>${dieVerdict ? '<span class="badge pass">PASS</span>' : '<span class="badge fail">FAIL</span>'}</td>
+    </tr>`;
+
+    const combinedVerdict = overall
+      ? '<span class="badge use">USE THIS TOOLING</span>'
+      : '<span class="badge fail">FAIL</span>';
+
+    combinedRows += `<tr>
+      <td class="left">${comboLabel}</td>
+      <td>${punchVerdict ? '<span class="badge pass">PASS</span>' : '<span class="badge fail">FAIL</span>'}</td>
+      <td>${dieVerdict  ? '<span class="badge pass">PASS</span>' : '<span class="badge fail">FAIL</span>'}</td>
+      <td>${fmt(tpf)}</td>
+      <td>${fmt(br)}</td>
+      <td>${combinedVerdict}</td>
+    </tr>`;
+
+    const mf2 = minFlange(die.vee_in, br);
+    geomRows += `<tr>
+      <td class="left">${die.id} (${die.vee_mm}mm)</td>
+      <td>${fmt(die.vee_in)}</td>
+      <td>${fmt(br)}</td>
+      <td>${fmt(mf2)}</td>
+    </tr>`;
+  });
+
+  document.getElementById('body-punch').innerHTML    = punchRows;
+  document.getElementById('body-die').innerHTML      = dieRows;
+  document.getElementById('body-combined').innerHTML = combinedRows;
+  document.getElementById('body-geometry').innerHTML = geomRows;
+
+  buildBendLengthLimits();
+}
+
+// ── Bend Length Limits (Mild Steel, all gauges × all dies) ──────────
+function buildBendLengthLimits() {
+  const tensile = 60000; // Mild Steel reference
+  const grid = document.getElementById('bll-grid');
+  grid.innerHTML = '';
+
+  DIES.forEach(die => {
+    let rows = '';
+    GAUGES.forEach(gauge => {
+      const T    = THICKNESSES[gauge];
+      const tpf  = tonsPerFt(T, tensile, die.vee_in);
+      const limitTpf = Math.min(PUNCH.maxPressure, die.maxPressure);
+      const maxLenByTon = limitTpf < tpf
+        ? (die.maxPressure * 12 / tpf) // tonnage-limited by die
+        : (MACHINE.maxCapacity * 12 / tpf);
+
+      // more precise: actual limiting t/ft
+      const actualLimit = Math.min(PUNCH.maxPressure, die.maxPressure);
+      const maxLenTon   = actualLimit * 12 / tpf;
+      const toolLenLim  = Math.min(PUNCH.length_in, die.length_in);
+
+      let effective;
+      if (tpf > die.maxPressure) {
+        effective = '<span class="badge incompat">INCOMPAT.</span>';
+      } else {
+        const effIn = Math.min(maxLenTon, toolLenLim);
+        effective = effIn.toFixed(1) + '"';
+      }
+
+      rows += `<tr>
+        <td class="left" style="font-size:11px;">${gauge}</td>
+        <td style="font-size:11px;">${tpf.toFixed(2)}</td>
+        <td style="font-size:11px;">${effective}</td>
+      </tr>`;
+    });
+
+    const block = document.createElement('div');
+    block.className = 'bll-die';
+    block.innerHTML = `
+      <div class="bll-die-title">${die.vee_mm}mm Vee — ${die.id}</div>
+      <table>
+        <thead><tr><th class="left">Gauge</th><th>t/ft</th><th>Eff. Max Len</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+    grid.appendChild(block);
+  });
+}
+
+// ── Tab switching ────────────────────────────────────────────────────
+function switchTab(el, name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+// ── Wire up inputs ──────────────────────────────────────────────────
+['material','gauge','bendLen'].forEach(id => {
+  document.getElementById(id).addEventListener('input', calculate);
+});
+
+calculate(); // initial render
+</script>
+</body>
+</html>

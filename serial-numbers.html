@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Serial Numbers — Stilt Team Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Page Chrome ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0f; --surface: #16171b; --surface2: #1e1f25;
+      --border: #2a2b33; --accent: #ff5c1a; --text: #f0f0f0; --muted: #8a8b96;
+    }
+
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    header {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 0 32px; display: flex; align-items: center; justify-content: space-between;
+      height: 60px; position: sticky; top: 0; z-index: 100;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; text-decoration: none; color: var(--text); }
+    .logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, #ff5c1a, #ffad33); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+    .breadcrumb { font-size: 13px; color: var(--muted); }
+    .breadcrumb span { color: var(--text); }
+
+    .page-wrap { max-width: 100%; margin: 0; padding: 24px 32px 60px; }
+    #sp-tool { max-width: 100% !important; }
+
+    /* ── Tool styles (original, preserved) ─────────── */
+    #sp-tool * { box-sizing: border-box; margin: 0; padding: 0; }
+    #sp-tool {
+      --brand: #46506e; --dark: #2b3245; --lite: #f0f2f6; --border: #d0d5e2;
+      --white: #ffffff; --dim: #7a86a0; --green: #3a7d44; --red: #c0392b;
+      --mono: 'IBM Plex Mono', monospace; --sans: 'Barlow', sans-serif;
+      --disp: 'Barlow Condensed', sans-serif;
+      font-family: var(--sans); color: var(--dark); max-width: 1080px; margin: 0 auto;
+    }
+    #sp-tool .setup-banner { background: var(--dark); border: 2px solid var(--brand); border-radius: 8px; padding: 20px 24px; margin-bottom: 20px; display: none; }
+    #sp-tool .setup-banner h3 { font-family: var(--disp); font-size: 14px; font-weight: 800; letter-spacing: 2px; color: #fff; margin-bottom: 12px; text-transform: uppercase; }
+    #sp-tool .setup-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    #sp-tool .setup-field label { display: block; font-family: var(--mono); font-size: 9px; letter-spacing: 1.5px; color: var(--dim); text-transform: uppercase; margin-bottom: 4px; }
+    #sp-tool .setup-field input { width: 100%; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.2); border-radius: 4px; color: #fff; padding: 8px 10px; font-family: var(--mono); font-size: 11px; outline: none; }
+    #sp-tool .setup-field input:focus { border-color: var(--brand); }
+    #sp-tool .layout { display: grid; grid-template-columns: 340px 1fr; gap: 18px; align-items: start; }
+    #sp-tool .card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(70,80,110,.08); }
+    #sp-tool .card-head { background: var(--brand); padding: 11px 16px; display: flex; align-items: center; gap: 8px; }
+    #sp-tool .card-title { font-family: var(--disp); font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #fff; }
+    #sp-tool .card-body { padding: 16px; }
+    #sp-tool .fg { margin-bottom: 13px; }
+    #sp-tool .fg label { display: block; font-family: var(--mono); font-size: 9px; letter-spacing: 1.5px; color: var(--brand); font-weight: 600; text-transform: uppercase; margin-bottom: 5px; }
+    #sp-tool .fg label .req { color: var(--red); }
+    #sp-tool .fg select, #sp-tool .fg input[type=text], #sp-tool .fg input[type=number] { width: 100%; padding: 8px 10px; background: var(--white); border: 1.5px solid var(--border); border-radius: 4px; color: var(--dark); font-family: var(--sans); font-size: 13px; outline: none; transition: border-color .2s; -webkit-appearance: none; appearance: none; }
+    #sp-tool .fg select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2346506e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; cursor: pointer; }
+    #sp-tool .fg select:focus, #sp-tool .fg input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(70,80,110,.1); }
+    #sp-tool .fg .hint { font-family: var(--mono); font-size: 9px; color: var(--dim); margin-top: 4px; }
+    #sp-tool .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    #sp-tool .sn-preview { background: var(--lite); border: 2px solid var(--border); border-radius: 6px; padding: 14px; margin: 14px 0; text-align: center; }
+    #sp-tool .sn-label { font-family: var(--mono); font-size: 9px; color: var(--dim); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+    #sp-tool .sn-value { font-family: var(--mono); font-size: 22px; font-weight: 600; letter-spacing: 2px; min-height: 34px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; }
+    #sp-tool .sn-ph { color: var(--dim); font-size: 12px; letter-spacing: 1px; }
+    #sp-tool .seg-us { color: var(--dim); } #sp-tool .seg-br { color: var(--brand); font-weight: 700; } #sp-tool .seg-it { color: var(--brand); } #sp-tool .seg-pr { color: var(--dark); font-weight: 800; } #sp-tool .seg-cd { color: var(--dim); } #sp-tool .seg-yr { color: #5a6882; } #sp-tool .seg-bt { color: var(--green); font-weight: 700; } #sp-tool .seg-sq { color: var(--dark); font-weight: 700; }
+    #sp-tool .btn { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; padding: 11px 16px; border-radius: 4px; border: none; font-family: var(--disp); font-size: 14px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: all .2s; }
+    #sp-tool .btn-primary { background: var(--brand); color: #fff; }
+    #sp-tool .btn-primary:hover:not(:disabled) { background: var(--dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(70,80,110,.3); }
+    #sp-tool .btn-primary:disabled { background: #b0b8cc; cursor: not-allowed; }
+    #sp-tool .btn-secondary { background: transparent; color: var(--brand); border: 1.5px solid var(--brand); margin-top: 8px; }
+    #sp-tool .btn-secondary:hover { background: rgba(70,80,110,.06); }
+    #sp-tool .btn-sm { padding: 5px 11px; font-size: 10px; width: auto; background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); color: #fff; border-radius: 4px; font-family: var(--mono); cursor: pointer; transition: background .15s; white-space: nowrap; }
+    #sp-tool .btn-sm:hover { background: rgba(255,255,255,.25); }
+    #sp-tool .status-badge { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 11px; color: var(--dim); margin-bottom: 14px; padding: 5px 10px; background: var(--lite); border: 1px solid var(--border); border-radius: 4px; width: 100%; }
+    #sp-tool .status-badge.ok { color: var(--green); background: rgba(58,125,68,.06); border-color: rgba(58,125,68,.25); }
+    #sp-tool .status-badge.err { color: var(--red); background: rgba(192,57,43,.06); border-color: rgba(192,57,43,.25); }
+    #sp-tool .log-toolbar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--border); background: var(--brand); flex-wrap: wrap; }
+    #sp-tool .log-title { font-family: var(--disp); font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #fff; flex: 1; }
+    #sp-tool .search-box { background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); color: #fff; padding: 5px 10px; border-radius: 4px; font-family: var(--mono); font-size: 11px; width: 150px; outline: none; }
+    #sp-tool .search-box::placeholder { color: rgba(255,255,255,.5); }
+    #sp-tool .stats-row { display: grid; grid-template-columns: repeat(4,1fr); border-bottom: 1px solid var(--border); }
+    #sp-tool .stat { padding: 11px 12px; text-align: center; border-right: 1px solid var(--border); }
+    #sp-tool .stat:last-child { border-right: none; }
+    #sp-tool .stat-v { font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--dark); }
+    #sp-tool .stat-l { font-family: var(--mono); font-size: 9px; color: var(--dim); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+    #sp-tool .log-wrap { overflow-x: auto; max-height: 460px; overflow-y: auto; }
+    #sp-tool table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    #sp-tool thead th { background: var(--lite); padding: 8px 12px; text-align: left; font-family: var(--mono); font-size: 9px; letter-spacing: 1px; color: var(--dim); text-transform: uppercase; position: sticky; top: 0; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    #sp-tool tbody tr { border-bottom: 1px solid #eef0f5; transition: background .12s; }
+    #sp-tool tbody tr:hover { background: rgba(70,80,110,.04); }
+    #sp-tool tbody tr.new-row { animation: sp-flash .8s ease; }
+    @keyframes sp-flash { from { background: rgba(70,80,110,.15); } to { background: transparent; } }
+    #sp-tool td { padding: 8px 12px; vertical-align: middle; white-space: nowrap; }
+    #sp-tool .td-sn { font-family: var(--mono); font-weight: 700; font-size: 13px; color: var(--dark); letter-spacing: 1px; }
+    #sp-tool .badge { display: inline-block; padding: 2px 7px; border-radius: 3px; font-family: var(--mono); font-size: 10px; font-weight: 600; }
+    #sp-tool .badge-P { background: rgba(58,125,68,.12); color: #2d6b38; border: 1px solid rgba(58,125,68,.25); }
+    #sp-tool .badge-L { background: rgba(70,80,110,.1); color: var(--brand); border: 1px solid rgba(70,80,110,.2); }
+    #sp-tool .badge-C { background: rgba(192,57,43,.1); color: var(--red); border: 1px solid rgba(192,57,43,.2); }
+    #sp-tool .copy-btn { background: none; border: 1px solid var(--border); color: var(--dim); padding: 3px 8px; border-radius: 3px; cursor: pointer; font-family: var(--mono); font-size: 10px; transition: all .15s; }
+    #sp-tool .copy-btn:hover { border-color: var(--brand); color: var(--brand); }
+    #sp-tool .empty { padding: 40px 20px; text-align: center; font-family: var(--mono); font-size: 12px; color: var(--dim); }
+    #sp-tool .spinner { width: 12px; height: 12px; border: 2px solid rgba(70,80,110,.2); border-top-color: var(--brand); border-radius: 50%; animation: sp-spin .7s linear infinite; display: inline-block; flex-shrink: 0; }
+    @keyframes sp-spin { to { transform: rotate(360deg); } }
+    #sp-toast { position: fixed; bottom: 24px; right: 24px; background: var(--brand, #46506e); color: #fff; font-family: 'IBM Plex Mono', monospace; font-size: 12px; padding: 10px 18px; border-radius: 6px; box-shadow: 0 6px 24px rgba(0,0,0,.2); transform: translateY(60px); opacity: 0; transition: all .3s; z-index: 9999; }
+    #sp-toast.show { transform: translateY(0); opacity: 1; }
+    #sp-toast.err { background: #c0392b; }
+    #sp-tool .config-link { font-family: var(--mono); font-size: 10px; color: var(--dim); text-align: right; margin-bottom: 8px; cursor: pointer; text-decoration: underline; }
+    #sp-tool .config-link:hover { color: var(--brand); }
+    @media (max-width: 760px) { #sp-tool .layout { grid-template-columns: 1fr; } #sp-tool .stats-row { grid-template-columns: repeat(2,1fr); } }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────── -->
+  <header>
+    <a href="/" class="logo">
+      <div class="logo-icon">⚙</div>
+      <span>Stilt Team Hub</span>
+    </a>
+    <span class="breadcrumb">Resources → <span>Serial Numbers</span></span>
+  </header>
+
+  <!-- ── Tool ───────────────────────────────────────── -->
+  <div class="page-wrap">
+    <div id="sp-tool">
+
+      <!-- Setup Banner -->
+      <div class="setup-banner" id="spSetupBanner">
+        <h3>⚙ One-Time Configuration</h3>
+        <div class="setup-row">
+          <div class="setup-field">
+            <label>Azure AD Client ID</label>
+            <input type="text" id="spClientId" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+          </div>
+          <div class="setup-field">
+            <label>Azure AD Tenant ID</label>
+            <input type="text" id="spTenantId" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+          </div>
+        </div>
+        <div class="setup-row">
+          <div class="setup-field">
+            <label>SharePoint Site URL</label>
+            <input type="text" id="spSiteUrl" value="https://stiltpro.sharepoint.com/sites/Production" />
+          </div>
+          <div class="setup-field">
+            <label>SharePoint List Name</label>
+            <input type="text" id="spListName" value="StiltProSerials" />
+          </div>
+        </div>
+        <button class="btn btn-sm" onclick="spSaveConfig()">Save Configuration</button>
+      </div>
+
+      <div class="config-link" id="spConfigToggle" style="display:none" onclick="spToggleConfig()">⚙ Edit Configuration</div>
+
+      <div class="layout">
+        <!-- ── Left: Form ── -->
+        <div>
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">⚡ Generate Serial Number</span>
+            </div>
+            <div class="card-body">
+              <div id="spStatus" class="status-badge">Initializing…</div>
+
+              <div class="fg">
+                <label>Product Type <span class="req">*</span></label>
+                <select id="spProduct" onchange="spUpdatePreview()">
+                  <option value="">— Select product —</option>
+                  <option value="GGM">GGM — A-Line</option>
+                  <option value="RHB">RHB — Rice Hull Blower</option>
+                  <option value="FIL">FIL — Pot Filler</option>
+                  <option value="MIX">MIX — Mixer</option>
+                  <option value="CVY">CVY — Conveyor</option>
+                  <option value="GOB">GOB — Gobbler</option>
+                  <option value="TSC">TSC — Soil Conveyor</option>
+                </select>
+              </div>
+
+              <div class="row2">
+                <div class="fg">
+                  <label>Iteration Letter <span class="req">*</span></label>
+                  <select id="spIterL" onchange="spUpdatePreview()">
+                    <option value="">—</option>
+                    <option value="A">A — 1st Gen</option>
+                    <option value="B">B — 2nd Gen</option>
+                    <option value="C">C — 3rd Gen</option>
+                    <option value="D">D — 4th Gen</option>
+                    <option value="E">E — 5th Gen</option>
+                  </select>
+                </div>
+                <div class="fg">
+                  <label>Sub-Iteration # <span class="req">*</span></label>
+                  <select id="spIterN" onchange="spUpdatePreview()">
+                    <option value="">—</option>
+                    <option value="1">1</option><option value="2">2</option>
+                    <option value="3">3</option><option value="4">4</option>
+                    <option value="5">5</option><option value="6">6</option>
+                    <option value="7">7</option><option value="8">8</option>
+                    <option value="9">9</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="row2">
+                <div class="fg">
+                  <label>Model Year <span class="req">*</span></label>
+                  <select id="spYear" onchange="spUpdatePreview()">
+                    <option value="">—</option>
+                    <option value="K">K — 2019</option><option value="L">L — 2020</option>
+                    <option value="M">M — 2021</option><option value="N">N — 2022</option>
+                    <option value="O">O — 2023</option><option value="P">P — 2024</option>
+                    <option value="Q">Q — 2025</option><option value="R" selected>R — 2026</option>
+                    <option value="S">S — 2027</option>
+                  </select>
+                </div>
+                <div class="fg">
+                  <label>Build Type <span class="req">*</span></label>
+                  <select id="spBuild" onchange="spUpdatePreview()">
+                    <option value="">—</option>
+                    <option value="P" selected>P — Production</option>
+                    <option value="L">L — LPB</option>
+                    <option value="C">C — Concept</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="fg">
+                <label>Check Digit (1–9) <span class="req">*</span></label>
+                <input type="number" id="spCheck" min="1" max="9" placeholder="e.g. 4" oninput="spUpdatePreview()" />
+              </div>
+
+              <div class="fg">
+                <label>Customer</label>
+                <input type="text" id="spCustomer" placeholder="e.g. Briggs Nursery" />
+              </div>
+
+              <div class="fg">
+                <label>Description</label>
+                <input type="text" id="spDesc" placeholder="e.g. Rear Load" />
+              </div>
+
+              <div class="sn-preview">
+                <div class="sn-label">Serial Number Preview</div>
+                <div class="sn-value" id="spPreview"><span class="sn-ph">Fill in fields above</span></div>
+              </div>
+
+              <button class="btn btn-primary" id="spGenBtn" disabled onclick="spGenerate()">Save Serial Number to SharePoint</button>
+              <button class="btn btn-secondary" onclick="spReset()">↺ Reset Form</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Right: Registry ── -->
+        <div class="card">
+          <div class="stats-row">
+            <div class="stat"><div class="stat-v" id="sTotal">—</div><div class="stat-l">Total</div></div>
+            <div class="stat"><div class="stat-v" id="sGGM">—</div><div class="stat-l">GGM</div></div>
+            <div class="stat"><div class="stat-v" id="sRHB">—</div><div class="stat-l">RHB</div></div>
+            <div class="stat"><div class="stat-v" id="sOther">—</div><div class="stat-l">Other</div></div>
+          </div>
+          <div class="log-toolbar">
+            <span class="log-title">Serial Registry</span>
+            <input type="text" class="search-box" id="spSearch" placeholder="Search…" oninput="spFilter()" />
+            <button class="btn-sm" onclick="spLoad()">↻ Refresh</button>
+            <button class="btn-sm" onclick="spExport()">⬇ CSV</button>
+          </div>
+          <div id="spLogWrap">
+            <div class="empty">Connecting to SharePoint…</div>
+          </div>
+        </div>
+      </div><!-- /layout -->
+
+    </div><!-- /sp-tool -->
+  </div><!-- /page-wrap -->
+
+  <div id="sp-toast"></div>
+
+  <script>
+    // ═══════════════════════════════════════════════════════
+    // STILT PRO — Serial Number Tool
+    // Uses MSAL popup auth + SharePoint List via Graph API
+    // ═══════════════════════════════════════════════════════
+
+    var SP_CFG = {
+      clientId: '49c36609-33e8-499d-b653-3c2425f8f616',
+      tenantId: 'bd6cd476-a8e3-4842-8472-1b52c7ebded1',
+      siteUrl: 'https://stiltpro.sharepoint.com/sites/Production',
+      listName: 'StiltProSerials'
+    };
+
+    var SP_GLOBAL_NEXT = 1;
+    var SP_ITER = {};
+    var SP_NEXT = {};
+    var SP_RECORDS = [];
+    var SP_TOKEN = null;
+    var SP_MSAL = null;
+
+    (function() {
+      var saved = localStorage.getItem('sp_cfg_v2');
+      if (saved) { try { SP_CFG = JSON.parse(saved); } catch(e) {} }
+      if (SP_CFG.clientId && SP_CFG.tenantId) {
+        document.getElementById('spSetupBanner').style.display = 'none';
+        document.getElementById('spConfigToggle').style.display = 'block';
+        spBoot();
+      } else {
+        document.getElementById('spSetupBanner').style.display = 'block';
+        spSetStatus('Configuration required — fill in the fields above', 'err');
+        document.getElementById('spGenBtn').disabled = true;
+      }
+    })();
+
+    function spSaveConfig() {
+      var c = document.getElementById('spClientId').value.trim();
+      var t = document.getElementById('spTenantId').value.trim();
+      var s = document.getElementById('spSiteUrl').value.trim().replace(/\/$/, '');
+      var l = document.getElementById('spListName').value.trim() || 'StiltProSerials';
+      if (!c || !t) { spToast('Client ID and Tenant ID are required', true); return; }
+      SP_CFG = {clientId: c, tenantId: t, siteUrl: s, listName: l};
+      localStorage.setItem('sp_cfg_v2', JSON.stringify(SP_CFG));
+      document.getElementById('spSetupBanner').style.display = 'none';
+      document.getElementById('spConfigToggle').style.display = 'block';
+      spBoot();
+    }
+
+    function spToggleConfig() {
+      var b = document.getElementById('spSetupBanner');
+      var showing = b.style.display !== 'none';
+      b.style.display = showing ? 'none' : 'block';
+      if (!showing) {
+        document.getElementById('spClientId').value = SP_CFG.clientId || '';
+        document.getElementById('spTenantId').value = SP_CFG.tenantId || '';
+        document.getElementById('spSiteUrl').value = SP_CFG.siteUrl || '';
+        document.getElementById('spListName').value = SP_CFG.listName || '';
+      }
+    }
+
+    function spBoot() {
+      if (window.msal) { spInitMsal(); return; }
+      var cdns = [
+        'https://cdnjs.cloudflare.com/ajax/libs/microsoft-authentication-library/2.38.3/msal-browser.min.js',
+        'https://unpkg.com/@azure/msal-browser@2.38.3/lib/msal-browser.min.js',
+        'https://cdn.jsdelivr.net/npm/@azure/msal-browser@2.38.3/lib/msal-browser.min.js'
+      ];
+      var idx = 0;
+      function tryNext() {
+        if (idx >= cdns.length) { spSetStatus('Could not load Microsoft auth library. Check console for details.', 'err'); return; }
+        var s = document.createElement('script');
+        s.src = cdns[idx++];
+        s.onload = function() { if (window.msal) { spInitMsal(); } else { tryNext(); } };
+        s.onerror = tryNext;
+        document.head.appendChild(s);
+      }
+      tryNext();
+    }
+
+    function spInitMsal() {
+      spSetStatus('Signing in to Microsoft 365…', '');
+      SP_MSAL = new msal.PublicClientApplication({
+        auth: {
+          clientId: SP_CFG.clientId,
+          authority: 'https://login.microsoftonline.com/' + SP_CFG.tenantId,
+          redirectUri: window.location.origin + window.location.pathname
+        },
+        cache: { cacheLocation: 'localStorage' }
+      });
+      SP_MSAL.initialize().then(function() {
+        var accounts = SP_MSAL.getAllAccounts();
+        if (accounts.length > 0) { spAcquireToken(accounts[0]); }
+        else {
+          spSetStatus('Click below to sign in with your Microsoft 365 account', '');
+          var btn = document.getElementById('spGenBtn');
+          btn.textContent = '🔑 Sign In with Microsoft 365';
+          btn.disabled = false;
+          btn.onclick = spSignIn;
+        }
+      }).catch(function(e) { spSetStatus('Auth error: ' + e.message, 'err'); });
+    }
+
+    function spSignIn() {
+      var btn = document.getElementById('spGenBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner" style="border-top-color:#fff"></div> Signing in…';
+      SP_MSAL.loginPopup({
+        scopes: ['Sites.ReadWrite.All', 'User.Read'],
+        prompt: 'select_account'
+      }).then(function(resp) {
+        SP_TOKEN = resp.accessToken;
+        spOnSignedIn(resp.account);
+      }).catch(function(e) {
+        btn.disabled = false;
+        btn.textContent = '🔑 Sign In with Microsoft 365';
+        btn.onclick = spSignIn;
+        if (e.errorCode === 'popup_window_error') { spToast('Popups blocked — please allow popups for this site', true); }
+        else { spToast('Sign-in error: ' + (e.errorCode || e.message), true); }
+      });
+    }
+
+    function spAcquireToken(account) {
+      SP_MSAL.acquireTokenSilent({ scopes: ['Sites.ReadWrite.All', 'User.Read'], account: account })
+        .then(function(r) { SP_TOKEN = r.accessToken; spOnSignedIn(account); })
+        .catch(function() {
+          SP_MSAL.acquireTokenPopup({ scopes: ['Sites.ReadWrite.All', 'User.Read'], account: account })
+            .then(function(r) { SP_TOKEN = r.accessToken; spOnSignedIn(account); })
+            .catch(function() { spSetStatus('Token error — try refreshing the page', 'err'); });
+        });
+    }
+
+    function spOnSignedIn(account) {
+      var email = account.username || '';
+      if (!email.toLowerCase().endsWith('@stilt.pro')) {
+        SP_MSAL.logoutPopup();
+        spSetStatus('Access restricted to @stilt.pro accounts only', 'err');
+        return;
+      }
+      spSetStatus('✓ Connected — ' + email, 'ok');
+      spLoad();
+    }
+
+    function spGraph(path, method, body, extraHeaders) {
+      var headers = Object.assign({ 'Authorization': 'Bearer ' + SP_TOKEN, 'Content-Type': 'application/json' }, extraHeaders || {});
+      return fetch('https://graph.microsoft.com/v1.0' + path, {
+        method: method || 'GET', headers: headers,
+        body: body ? JSON.stringify(body) : undefined
+      }).then(function(r) {
+        if (!r.ok) return r.text().then(function(t) { throw new Error(r.status + ': ' + t); });
+        return method === 'DELETE' ? null : r.json();
+      });
+    }
+
+    var SP_SITE_ID = null, SP_LIST_ID = null;
+
+    function spGetIds() {
+      if (SP_SITE_ID && SP_LIST_ID) return Promise.resolve();
+      var host = new URL(SP_CFG.siteUrl).hostname;
+      var path = new URL(SP_CFG.siteUrl).pathname;
+      return spGraph('/sites/' + host + ':' + path).then(function(s) {
+        SP_SITE_ID = s.id;
+        return spGraph('/sites/' + SP_SITE_ID + '/lists?$filter=displayName eq \'' + SP_CFG.listName + '\'');
+      }).then(function(l) {
+        if (!l.value.length) throw new Error('List "' + SP_CFG.listName + '" not found in SharePoint.');
+        SP_LIST_ID = l.value[0].id;
+      });
+    }
+
+    function spLoad() {
+      spGetIds().then(function() {
+        return spGraph('/sites/' + SP_SITE_ID + '/lists/' + SP_LIST_ID + '/items?$expand=fields&$top=5000', 'GET', null, {'Prefer': 'HonorNonIndexedQueriesWarningMayFailRandomly'});
+      }).then(function(data) {
+        data.value.sort(function(a,b) { return new Date(b.fields.Created||0) - new Date(a.fields.Created||0); });
+        SP_RECORDS = data.value.map(function(item) {
+          return {
+            serial: item.fields.SerialNumber || item.fields.Title || '',
+            product: item.fields.ProductCode || '',
+            customer: item.fields.Customer || '—',
+            description: item.fields.Description || '—',
+            buildType: item.fields.BuildType || '',
+            modelYear: item.fields.ModelYear || '',
+            iteration: item.fields.Iteration || '',
+            generatedBy: item.fields.GeneratedBy || '',
+            generatedAt: item.fields.Created || ''
+          };
+        });
+        SP_GLOBAL_NEXT = 1;
+        SP_ITER = {};
+        SP_RECORDS.forEach(function(r) {
+          if (r.serial && r.serial.length >= 16) {
+            var seq = parseInt(r.serial.slice(-5), 10);
+            if (!isNaN(seq)) { SP_GLOBAL_NEXT = Math.max(SP_GLOBAL_NEXT, seq + 1); }
+            var prod = r.serial.substring(5, 8);
+            var iterL = r.serial.charAt(3);
+            var iterN = r.serial.charAt(4);
+            if (prod && iterL && iterN) {
+              if (!SP_ITER[prod]) { SP_ITER[prod] = {letter: iterL, num: iterN}; }
+              else {
+                var cur = SP_ITER[prod];
+                if (iterL > cur.letter || (iterL === cur.letter && iterN > cur.num)) { SP_ITER[prod] = {letter: iterL, num: iterN}; }
+              }
+            }
+          }
+        });
+        document.getElementById('spGenBtn').disabled = false;
+        document.getElementById('spGenBtn').textContent = 'Save Serial Number to SharePoint';
+        document.getElementById('spGenBtn').onclick = spGenerate;
+        spRenderLog(); spUpdateStats(); spUpdatePreview();
+      }).catch(function(e) { spSetStatus('SharePoint error: ' + e.message, 'err'); });
+    }
+
+    function spGenerate() {
+      var prod = document.getElementById('spProduct').value;
+      var iterL = document.getElementById('spIterL').value;
+      var iterN = document.getElementById('spIterN').value;
+      var check = document.getElementById('spCheck').value;
+      var year = document.getElementById('spYear').value;
+      var build = document.getElementById('spBuild').value;
+      var cust = document.getElementById('spCustomer').value.trim();
+      var desc = document.getElementById('spDesc').value.trim();
+      if (!prod || !iterL || !iterN || !check || !year || !build) { spToast('Please fill in all required fields', true); return; }
+      var seq = SP_GLOBAL_NEXT;
+      var seqStr = String(seq).padStart(5, '0');
+      var serial = '1SP' + iterL + iterN + prod + check + year + build + seqStr;
+      var btn = document.getElementById('spGenBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner" style="border-top-color:#fff"></div> Saving…';
+      var account = SP_MSAL.getAllAccounts()[0];
+      var generatedBy = account ? account.name || account.username : '';
+      spGetIds().then(function() {
+        return spGraph('/sites/' + SP_SITE_ID + '/lists/' + SP_LIST_ID + '/items', 'POST', {
+          fields: {
+            Title: serial, SerialNumber: serial, ProductCode: prod,
+            Customer: cust || '', Description: desc || '',
+            BuildType: build === 'P' ? 'Production' : build === 'L' ? 'LPB' : 'Concept',
+            ModelYear: year, Iteration: iterL + iterN, GeneratedBy: generatedBy
+          }
+        });
+      }).then(function() {
+        SP_GLOBAL_NEXT = seq + 1;
+        SP_RECORDS.unshift({ serial: serial, product: prod, customer: cust || '—', description: desc || '—', buildType: build === 'P' ? 'Production' : build === 'L' ? 'LPB' : 'Concept', modelYear: year, iteration: iterL + iterN, generatedBy: generatedBy, generatedAt: new Date().toISOString() });
+        spToast('✓ ' + serial + ' saved');
+        spRenderLog(); spUpdateStats(); spUpdatePreview();
+        btn.disabled = false;
+        btn.textContent = 'Save Serial Number to SharePoint';
+        btn.onclick = spGenerate;
+        navigator.clipboard && navigator.clipboard.writeText(serial);
+      }).catch(function(e) {
+        spToast('Save failed: ' + e.message, true);
+        btn.disabled = false;
+        btn.textContent = 'Save Serial Number to SharePoint';
+        btn.onclick = spGenerate;
+      });
+    }
+
+    function spUpdatePreview() {
+      var prod = document.getElementById('spProduct').value;
+      var iterL = document.getElementById('spIterL').value;
+      var iterN = document.getElementById('spIterN').value;
+      var check = document.getElementById('spCheck').value;
+      var year = document.getElementById('spYear').value;
+      var build = document.getElementById('spBuild').value;
+      var el = document.getElementById('spPreview');
+      if (prod && SP_ITER[prod]) {
+        var best = SP_ITER[prod];
+        if (!iterL || iterL !== best.letter) { document.getElementById('spIterL').value = best.letter; iterL = best.letter; }
+        if (!iterN || iterN !== best.num) { document.getElementById('spIterN').value = best.num; iterN = best.num; }
+      }
+      if (!prod || !iterL || !iterN || !check || !year || !build) { el.innerHTML = '<span class="sn-ph">Fill in fields above</span>'; return; }
+      var seq = String(SP_GLOBAL_NEXT || 1).padStart(5, '0');
+      el.innerHTML = '<span class="seg-us">1</span><span class="seg-br">SP</span><span class="seg-it">' + iterL + iterN + '</span><span class="seg-pr">' + prod + '</span><span class="seg-cd">' + check + '</span><span class="seg-yr">' + year + '</span><span class="seg-bt">' + build + '</span><span class="seg-sq">' + seq + '</span>';
+    }
+
+    function spRenderLog(filter) {
+      var wrap = document.getElementById('spLogWrap');
+      var data = filter ? SP_RECORDS.filter(function(r) { return JSON.stringify(r).toLowerCase().includes(filter.toLowerCase()); }) : SP_RECORDS;
+      if (!data.length) { wrap.innerHTML = '<div class="empty">' + (filter ? 'No matches found.' : 'No records yet.') + '</div>'; return; }
+      var rows = data.map(function(r, i) {
+        var bc = r.buildType === 'Production' ? 'P' : r.buildType === 'LPB' ? 'L' : 'C';
+        var dt = r.generatedAt ? new Date(r.generatedAt).toLocaleDateString() : '—';
+        var nr = i === 0 && !filter ? ' class="new-row"' : '';
+        return '<tr' + nr + '><td class="td-sn">' + r.serial + '</td><td style="font-family:var(--mono);font-size:11px">' + r.product + '</td><td>' + r.customer + '</td><td><span class="badge badge-' + bc + '">' + r.buildType + '</span></td><td style="color:var(--dim);font-family:var(--mono);font-size:10px">' + r.modelYear + '</td><td style="color:var(--dim)">' + r.description + '</td><td style="color:var(--dim);font-family:var(--mono);font-size:10px">' + (r.generatedBy || '—') + '</td><td style="color:var(--dim);font-family:var(--mono);font-size:10px">' + dt + '</td><td><button class="copy-btn" onclick="spCopy(\'' + r.serial + '\')">Copy</button></td></tr>';
+      }).join('');
+      wrap.innerHTML = '<div class="log-wrap"><table><thead><tr><th>Serial Number</th><th>Product</th><th>Customer</th><th>Build</th><th>Year</th><th>Description</th><th>Generated By</th><th>Date</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+    }
+
+    function spFilter() { spRenderLog(document.getElementById('spSearch').value); }
+
+    function spUpdateStats() {
+      document.getElementById('sTotal').textContent = SP_RECORDS.length;
+      document.getElementById('sGGM').textContent = SP_RECORDS.filter(function(r) { return r.product === 'GGM'; }).length;
+      document.getElementById('sRHB').textContent = SP_RECORDS.filter(function(r) { return r.product === 'RHB'; }).length;
+      document.getElementById('sOther').textContent = SP_RECORDS.filter(function(r) { return r.product !== 'GGM' && r.product !== 'RHB'; }).length;
+    }
+
+    function spReset() {
+      ['spProduct','spIterL','spIterN','spCheck','spCustomer','spDesc'].forEach(function(id) { document.getElementById(id).value = ''; });
+      document.getElementById('spYear').value = 'R';
+      document.getElementById('spBuild').value = 'P';
+      spUpdatePreview();
+    }
+
+    function spCopy(sn) { navigator.clipboard && navigator.clipboard.writeText(sn); spToast('✓ Copied: ' + sn); }
+
+    function spExport() {
+      if (!SP_RECORDS.length) { spToast('No records to export', true); return; }
+      var hdr = 'Serial Number,Product,Customer,Build Type,Model Year,Description,Generated By,Date\n';
+      var rows = SP_RECORDS.map(function(r) {
+        return [r.serial, r.product, r.customer, r.buildType, r.modelYear, r.description, r.generatedBy || '', r.generatedAt || ''].map(function(v) { return '"' + v + '"'; }).join(',');
+      }).join('\n');
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([hdr + rows], {type: 'text/csv'}));
+      a.download = 'stiltpro-serials-' + new Date().toISOString().split('T')[0] + '.csv';
+      a.click();
+      spToast('CSV exported');
+    }
+
+    function spSetStatus(msg, type) {
+      var el = document.getElementById('spStatus');
+      el.className = 'status-badge' + (type ? ' ' + type : '');
+      el.innerHTML = type === '' ? '<div class="spinner"></div><span>' + msg + '</span>' : msg;
+    }
+
+    function spToast(msg, err) {
+      var t = document.getElementById('sp-toast');
+      t.textContent = msg;
+      t.className = err ? 'err show' : 'show';
+      setTimeout(function() { t.className = ''; }, 3500);
+    }
+  </script>
+</body>
+</html>
