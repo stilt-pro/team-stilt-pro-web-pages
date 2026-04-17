@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stilt Team Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d0d0f;
+      --surface:   #16171b;
+      --surface2:  #1e1f25;
+      --border:    #2a2b33;
+      --accent:    #ff5c1a;
+      --accent2:   #ffad33;
+      --blue:      #3b82f6;
+      --green:     #22c55e;
+      --purple:    #a855f7;
+      --cyan:      #06b6d4;
+      --text:      #f0f0f0;
+      --muted:     #8a8b96;
+      --radius:    16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    /* ── Header ─────────────────────────────────────── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+
+    .badge {
+      background: rgba(255,92,26,0.15);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,92,26,0.3);
+      letter-spacing: 0.5px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 13px;
+      color: var(--muted);
+      width: 200px;
+      cursor: text;
+    }
+
+    .avatar {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #3b82f6, #a855f7);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    /* ── Hero ───────────────────────────────────────── */
+    .hero {
+      padding: 56px 40px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .greeting {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+
+    .hero h1 {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      background: linear-gradient(90deg, #fff 0%, #aaa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 480px;
+      line-height: 1.6;
+    }
+
+    .stat-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      text-align: center;
+      min-width: 90px;
+    }
+
+    .stat-num {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Section Title ──────────────────────────────── */
+    .section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px 60px;
+    }
+
+    .section-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Card Grid ──────────────────────────────────── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--card-accent, var(--accent));
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .card:hover {
+      border-color: transparent;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+      background: var(--surface2);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-icon {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+      background: var(--card-bg, rgba(255,92,26,0.1));
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-tag {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .tag-live   { background: rgba(34,197,94,0.12); color: var(--green); }
+    .tag-wip    { background: rgba(255,173,51,0.12); color: var(--accent2); }
+    .tag-new    { background: rgba(59,130,246,0.12); color: var(--blue); }
+
+    .card-arrow {
+      color: var(--muted);
+      font-size: 16px;
+      transition: transform 0.2s;
+    }
+
+    .card:hover .card-arrow { transform: translateX(4px); color: var(--text); }
+
+    /* ── Featured (wide) card ───────────────────────── */
+    .card-featured {
+      grid-column: span 2;
+      background: linear-gradient(135deg, #1a1014, #160e1c);
+      border-color: rgba(168,85,247,0.25);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 20px;
+      align-items: center;
+    }
+
+    @media (max-width: 640px) {
+      .card-featured { grid-column: span 1; grid-template-columns: 1fr; }
+    }
+
+    .card-featured::before { background: var(--purple); }
+
+    .card-featured .card-icon {
+      background: rgba(168,85,247,0.15);
+      --card-bg: rgba(168,85,247,0.15);
+    }
+
+    .card-featured-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .coming-soon {
+      background: rgba(168,85,247,0.1);
+      border: 1px dashed rgba(168,85,247,0.4);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 12px;
+      color: #a855f7;
+      font-weight: 600;
+    }
+
+    /* ── Equipment Section ─────────────────────────── */
+    .equip-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .equip-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .equip-card:hover {
+      border-color: var(--card-accent, var(--accent));
+      transform: translateX(4px);
+      background: var(--surface2);
+    }
+
+    .equip-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .equip-name { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+    .equip-sub  { font-size: 12px; color: var(--muted); }
+
+    /* ── Footer ─────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--muted);
+      max-width: 100%;
+    }
+
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    /* ── Scrollbar ──────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3a3b44; }
+
+    /* ── Responsive ─────────────────────────────────── */
+    @media (max-width: 640px) {
+      header { padding: 0 20px; }
+      .hero, .section { padding-left: 20px; padding-right: 20px; }
+      .hero { padding-top: 32px; }
+      .search-bar { display: none; }
+      .stat-group { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────── -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">⚙</div>
+      <span>Stilt</span>
+      <span style="color:var(--muted); font-weight:400;">Team Hub</span>
+      <span class="badge">INTERNAL</span>
+    </div>
+    <div class="header-right">
+      <div class="search-bar">
+        <span>🔍</span>
+        Quick find...
+      </div>
+      <div class="avatar">S</div>
+    </div>
+  </header>
+
+  <!-- ── Hero ───────────────────────────────────────── -->
+  <div class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="greeting">🔒 Team Access Only</div>
+        <h1>Everything you need,<br>all in one place.</h1>
+        <p class="hero-sub">Quick access to serial numbers, drawings, schedules, and equipment docs — built for the shop floor.</p>
+      </div>
+      <div class="stat-group">
+        <div class="stat-pill">
+          <div class="stat-num" style="color:var(--green);">5</div>
+          <div class="stat-label">Resources</div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-num" style="color:var(--accent);">2</div>
+          <div class="stat-label">Equipment</div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-num" style="color:var(--blue);">∞</div>
+          <div class="stat-label">Growing</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Core Resources ─────────────────────────────── -->
+  <div class="section">
+    <div class="section-title">Core Resources</div>
+    <div class="card-grid">
+
+      <!-- Serial Numbers -->
+      <a href="/serial-numbers.html" class="card" style="--card-accent: var(--blue); --card-bg: rgba(59,130,246,0.1);">
+        <div class="card-icon" style="background: rgba(59,130,246,0.12);">🔢</div>
+        <div class="card-title">Serial Numbers</div>
+        <div class="card-desc">Look up and track unit serial numbers across all products and builds.</div>
+        <div class="card-footer">
+          <span class="card-tag tag-live">● Live</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <!-- Drawings -->
+      <a href="https://stilt.pro/drawings/" class="card" style="--card-accent: var(--accent); --card-bg: rgba(255,92,26,0.1);">
+        <div class="card-icon" style="background: rgba(255,92,26,0.12);">📐</div>
+        <div class="card-title">Technical Drawings</div>
+        <div class="card-desc">Access the full library of engineering drawings, specs, and dimensional docs.</div>
+        <div class="card-footer">
+          <span class="card-tag tag-live">● Live</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <!-- Production Schedule -->
+      <a href="https://production.team.stilt.pro/" class="card" style="--card-accent: var(--green); --card-bg: rgba(34,197,94,0.1);">
+        <div class="card-icon" style="background: rgba(34,197,94,0.12);">📅</div>
+        <div class="card-title">Production Schedule</div>
+        <div class="card-desc">View current build schedules, job queues, and upcoming production milestones.</div>
+        <div class="card-footer">
+          <span class="card-tag tag-live">● Live</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ── Equipment Ops ───────────────────────────────── -->
+  <div class="section">
+    <div class="section-title">Equipment Operations</div>
+    <div class="equip-grid">
+
+      <!-- Press Brake -->
+      <a href="/brake-press" class="equip-card" style="--card-accent: var(--cyan);">
+        <div class="equip-icon" style="background: rgba(6,182,212,0.12);">🔧</div>
+        <div>
+          <div class="equip-name">Press Brake</div>
+          <div class="equip-sub">Operation guide · Safety · Programs</div>
+        </div>
+        <span style="margin-left:auto; color: var(--muted);">→</span>
+      </a>
+
+      <!-- Laser Cutter -->
+      <a href="#" class="equip-card" style="--card-accent: var(--purple);">
+        <div class="equip-icon" style="background: rgba(168,85,247,0.12);">⚡</div>
+        <div>
+          <div class="equip-name">Laser Cutter</div>
+          <div class="equip-sub">Operation guide · Safety · Settings</div>
+        </div>
+        <span style="margin-left:auto; color: var(--muted);">→</span>
+      </a>
+
+      <!-- Placeholder for more -->
+      <a href="#" class="equip-card" style="--card-accent: var(--border); opacity: 0.45; pointer-events: none;">
+        <div class="equip-icon" style="background: rgba(138,139,150,0.1);">＋</div>
+        <div>
+          <div class="equip-name">More coming soon</div>
+          <div class="equip-sub">Equipment docs will appear here</div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ── Footer ─────────────────────────────────────── -->
+  <footer>
+    <span>© 2026 Stilt — Internal Use Only</span>
+    <span>🔒 team.stilt.pro</span>
+  </footer>
+
+</body>
+</html>
