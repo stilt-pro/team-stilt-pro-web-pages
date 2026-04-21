@@ -1,0 +1,9 @@
+# User task data — written by api/squares.php at runtime.
+# Kept out of git so deploys (git pull on cPanel) don't overwrite live data.
+data/*.json
+
+# Local editor / OS noise
+.DS_Store
+Thumbs.db
+*.swp
+*~

@@ -83,6 +83,19 @@
       gap: 16px;
     }
 
+    .header-right a.nav-link {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--accent);
+      background: rgba(255,92,26,0.12);
+      transition: all 0.2s ease;
+    }
+    .header-right a.nav-link:hover { background: var(--accent); color: #fff; }
+
     .search-bar {
       display: flex;
       align-items: center;
@@ -413,6 +426,7 @@
       <span class="badge">INTERNAL</span>
     </div>
     <div class="header-right">
+      <a href="tasks.html" class="nav-link">📝 Tasks</a>
       <div class="search-bar">
         <span>🔍</span>
         Quick find...
@@ -431,7 +445,7 @@
       </div>
       <div class="stat-group">
         <div class="stat-pill">
-          <div class="stat-num" style="color:var(--green);">5</div>
+          <div class="stat-num" style="color:var(--green);">6</div>
           <div class="stat-label">Resources</div>
         </div>
         <div class="stat-pill">
@@ -480,6 +494,17 @@
         <div class="card-desc">View current build schedules, job queues, and upcoming production milestones.</div>
         <div class="card-footer">
           <span class="card-tag tag-live">● Live</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <!-- Tasks (Team Squares) -->
+      <a href="tasks.html" class="card" style="--card-accent: var(--accent2); --card-bg: rgba(255,173,51,0.1);">
+        <div class="card-icon" style="background: rgba(255,173,51,0.12);">📝</div>
+        <div class="card-title">Tasks</div>
+        <div class="card-desc">Team Squares — per-person task board with Eisenhower priority, to-dos for others, and waiting-on queue. Shared across the team.</div>
+        <div class="card-footer">
+          <span class="card-tag tag-new">● New</span>
           <span class="card-arrow">→</span>
         </div>
       </a>
